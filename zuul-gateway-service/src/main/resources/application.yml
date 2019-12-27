@@ -1,0 +1,24 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: Zuul-Gateway-Service
+zuul:
+  sensitiveHeaders: Cookie,Set-Cookie
+  routes:
+    oauth:
+      path: /auth/**
+      service-id: OAUTH-AUTHORIZATION-SERVICE
+    basic-service:
+      path: /basic-service/**
+      service-id: BASIC-SERVICE
+      sensitive-headers: null
+      strip-prefix: false
+  ignored-services: "*"
+
+security:
+  oauth2:
+    resource:
+      jwt:
+        key-value: 123
+

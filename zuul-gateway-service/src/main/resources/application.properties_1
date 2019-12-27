@@ -1,0 +1,22 @@
+
+spring.application.name=Zuul-Gateway-Service
+
+zuul.ignored-services="*"
+zuul.host.max-total-connections=1000
+zuul.host.max-per-route-connections=1000
+
+zuul.routes.basic-service.path="/basic-service/**"
+zuul.routes.basic-service.sensitive-headers=null
+zuul.routes.basic-service.service-id="basic-service"
+zuul.routes.basic-service.strip-prefix=false
+
+zuul.sensitiveHeaders=Cookie,Set-Cookie
+
+zuul.routes.oauth-service.path = "/oauth/**"
+zuul.routes.oauth-service.url = "http://localhost:8081/spring-security-oauth-server/oauth"
+
+security.oauth2.resource.jwt.key-value= 123
+
+server.port=8080
+
+logging.level.root=INFO

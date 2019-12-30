@@ -15,7 +15,6 @@
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
-		<java.version>11</java.version>
 		<spring-cloud.version>Hoxton.SR1</spring-cloud.version>
 		<oauth.version>2.4.0.RELEASE</oauth.version>
 		<jwt.version>1.0.10.RELEASE</jwt.version>

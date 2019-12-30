@@ -15,7 +15,6 @@
 	<description>Eureka Discovery Server</description>
 
 	<properties>
-		<java.version>11</java.version>
 		<spring-cloud.version>Hoxton.SR1</spring-cloud.version>
 	</properties>
 

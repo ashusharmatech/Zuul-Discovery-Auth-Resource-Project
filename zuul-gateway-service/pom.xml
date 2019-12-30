@@ -15,7 +15,6 @@
 	<description>Zuul gateway service</description>
 
 	<properties>
-		<java.version>11</java.version>
 		<spring-cloud.version>Hoxton.SR1</spring-cloud.version>
 		<oauth-autoconfig.version>2.1.3.RELEASE</oauth-autoconfig.version>
 	</properties>

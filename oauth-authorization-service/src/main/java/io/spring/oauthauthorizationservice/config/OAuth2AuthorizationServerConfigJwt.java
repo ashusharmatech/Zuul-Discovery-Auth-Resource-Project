@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -16,9 +17,11 @@ import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 
 @Configuration
@@ -29,6 +32,9 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
     @Qualifier("authenticationManagerBean")
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private DataSource dataSource;
+
     @Override
     public void configure(final AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
         oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
@@ -36,6 +42,9 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
 
     @Override
     public void configure(final ClientDetailsServiceConfigurer clients) throws Exception { // @formatter:off
+
+
+        /*
         clients.inMemory()
                 .withClient("sampleClientId")
                 .authorizedGrantTypes("implicit")
@@ -50,7 +59,7 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
                 .scopes("foo", "read", "write")
                 .accessTokenValiditySeconds(3600)       // 1 hour
                 .refreshTokenValiditySeconds(2592000)  // 30 days
-                .redirectUris("http://www.example.com","http://localhost:8089/","http://localhost:8080/login/oauth2/code/custom","http://localhost:8080/ui-thymeleaf/login/oauth2/code/custom", "http://localhost:8080/authorize/oauth2/code/bael", "http://localhost:8080/login/oauth2/code/bael")
+                .redirectUris("http://www.example.com","http://localhost:8089/","http://localhost:8080/","http://localhost:8090/","http://localhost:8080/login/oauth2/code/custom","http://localhost:8080/ui-thymeleaf/login/oauth2/code/custom", "http://localhost:8080/authorize/oauth2/code/bael", "http://localhost:8080/login/oauth2/code/bael")
                 .and()
                 .withClient("barClientIdPassword")
                 .secret(passwordEncoder().encode("secret"))
@@ -64,7 +73,14 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
                 .scopes("read", "write", "foo", "bar")
                 .autoApprove(true)
                 .redirectUris("http://www.example.com");
+
+
+         */
+
+        clients.jdbc(dataSource);
+
     } // @formatter:on
+
 
     @Bean
     @Primary
@@ -84,9 +100,14 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
     }
 
     @Bean
+    public JdbcTokenStore tokenStore() {
+        return new JdbcTokenStore(dataSource);
+    }
+
+    /*@Bean
     public TokenStore tokenStore() {
         return new JwtTokenStore(accessTokenConverter());
-    }
+    }*/
 
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
@@ -97,8 +118,13 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
         return converter;
     }
 
-    @Bean
+   /* @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }*/
+
+    @Bean
+    public NoOpPasswordEncoder passwordEncoder() {
+        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
     }
 }
